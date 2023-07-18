@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>save</title>
+</head>
+<body style="margin: 0; ">
+<div style="background-color: #313777; display: flex;margin: 0;padding: 10px;">
+    <h2 style="color: white;font-style: italic;text-align:center; display:flex; margin-left:300px">dcinside.com 게시물 작성</h2>
+</div>
+<form action="/board/save" method="post" enctype="multipart/form-data">
+    writer: <input type="text" name="boardWriter" disabled> <br>
+    pass: <input type="text" name="boardPass" disabled> <br>
+    title: <input type="text" name="boardTitle"> <br>
+    contents: <textarea name="boardContents" cols="30" rows="10"></textarea> <br>
+    <input type="submit" value="글작성">
+</form>
+</body>
+</html>

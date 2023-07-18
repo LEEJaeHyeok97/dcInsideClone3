@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <style>
+        body {
+            background-color: #DCDCDC;
+        }
+
+        .a {
+        display: inline-block;
+            padding: 10px 20px;
+            background-color: white;
+            color: navy;
+            border-color: navy;
+            border-style: solid;
+            text-decoration: none;
+            border-radius: 5px;
+            }
+
+
+
+
+    </style>
+</head>
+<body style="margin: 0; ">
+<div style="background-color: #313777; display: flex;margin: 0;padding: 10px;">
+    <h2 style="color: white;font-style: italic;text-align:center; display:flex; margin-left:300px">dcinside.com 갤러리</h2>
+</div>
+<div style="margin: 10px">
+    <a href="/oauth/login" style="text-decoration:none; color: black">카카오회원가입 </a>
+    |
+    <a href="/member/save" style="text-decoration:none;color: black"> 회원가입(DB) </a>
+    |
+    <span th:if="${session.loginId == null}">
+<a href="/member/login" style="text-decoration:none; color: black"> 로그인</a>
+        </span>
+    <span th:if="${session.loginId}">
+        <span th:text="${session.loginId}"></span>
+        <span> 님이 로그인 중입니다.</span>
+        <a href="/member/logout">로그아웃</a>
+    </span>
+</div>
+<div style="margin-top: 50px">
+    <a class="a">전체글</a>
+    <a class="a">개념글</a>
+    <a class="a">공지글</a>
+    <span style="margin-left: 500px">
+    <a>30개</a>
+    <a>50개</a>
+    <a>100개</a>
+        <span th:if="${session.loginId}">
+    <a class="a" href="/board/save">글쓰기</a>
+            </span>
+    </span>
+</div>
+<hr>
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>writer</th>
+        <th>date</th>
+        <th>hits</th>
+    </tr>
+    <tr th:each="board: ${boardList}">
+        <td th:text="${board.id}"></td>
+        <td><a th:href="@{|/board/${board.id}|}" th:text="${board.boardTitle}"></a></td>
+        <td th:text="${board.boardWriter}"></td>
+        <td th:text="*{#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${board.boardHits}"></td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,30 @@
+# 서버 포트 설정
+server:
+  port: 8082
+
+# database 연동 설정
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/spring?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${MYSQL_USER}
+    password: ${MYSQL_ROOT_PASSWORD}
+  thymeleaf:
+    cache: false
+
+  # spring data jpa 설정
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+
+# 카카오 로그인 설정
+  kakao:
+    client.id: 4fdffd9fe5c823d1281774537a737c40
+    client.secret: 869PXdlDlrmQ5HzADFYk0FcrWG2VweFO
+    redirect.url: http://localhost:8082/oauth/kakao
