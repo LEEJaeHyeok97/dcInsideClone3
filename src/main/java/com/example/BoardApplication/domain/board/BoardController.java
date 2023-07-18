@@ -2,6 +2,9 @@ package com.example.BoardApplication.domain.board;
 
 import com.example.BoardApplication.domain.board.dto.BoardDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +48,8 @@ public class BoardController {
 
 
     @GetMapping("/{id}")
-    public ModelAndView findById(@PathVariable Long id, Model model) {
+    public ModelAndView findById(@PathVariable Long id, Model model,
+                                 @PageableDefault(page=1) Pageable pageable) {
         /*
             해당 게시글의 조회수를 하나 올리고
             게시글 데이터를 가져와서 detail.html에 출력
@@ -53,6 +57,7 @@ public class BoardController {
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("board", boardDTO);
+        model.addAttribute("page", pageable.getPageNumber());
 
         ModelAndView mav = new ModelAndView("detail");
         return mav;
@@ -87,5 +92,34 @@ public class BoardController {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/"));
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+    }
+
+
+    //페이징
+    // /board/paging?page=1
+    @GetMapping("/paging")
+    public ModelAndView paging(@PageableDefault(page = 1)Pageable pageable, Model model) {
+        //스프링의 Pageable 인터페이스를 사용한다
+//        pageable.getPageNumber();
+        Page<BoardDTO> boardList = boardService.paging(pageable);
+        int blockLimit = 3;
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10~
+        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+
+        // page 갯수 20개
+        // 현재 사용자가 3페이지
+        // 1 2 3 4 5
+        // 현재 사용자가 7페이지
+        // 7 8 9
+        // 보여지는 페이지 갯수 3개
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+
+        ModelAndView mav = new ModelAndView("index");
+        return mav;
+
     }
 }

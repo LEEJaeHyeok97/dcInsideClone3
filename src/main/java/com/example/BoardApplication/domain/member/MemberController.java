@@ -32,16 +32,18 @@ public class MemberController {
     }
 
     @PostMapping("/save")
-    public ModelAndView save(@ModelAttribute MemberDTO memberDTO) {
+    public ResponseEntity<?> save(@ModelAttribute MemberDTO memberDTO) {
         ModelAndView mav = new ModelAndView("index");
         System.out.println("memberDTO = " + memberDTO);
         memberService.save(memberDTO);
 
-        return mav;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/"));
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     @PostMapping("/login") //세션 정보 저장 (인가)
-    public ModelAndView login(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
+    public ResponseEntity<?> login(@ModelAttribute MemberDTO memberDTO, HttpSession session, Model model) {
         List<BoardDTO> boardDTOList = boardService.findAll();
         model.addAttribute("boardList", boardDTOList);
 
@@ -51,10 +53,14 @@ public class MemberController {
         if (loginResult != null) {
             //login 성공
             session.setAttribute("loginId", loginResult.getMemberId()); // 세션 정보 담아준다.
-            return success;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("/"));
+            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
         } else {
             //login 실패
-            return fail;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create("/board/login"));
+            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
         }
 
     }
@@ -67,10 +73,10 @@ public class MemberController {
 
     //로그아웃
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
+    public ResponseEntity<?>  logout(HttpSession session, Model model) {
+
         session.invalidate();
 
-        //localhost:8082/ 로 redirect 하는 코드
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/"));
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
