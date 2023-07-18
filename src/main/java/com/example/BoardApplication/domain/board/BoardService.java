@@ -4,6 +4,10 @@ import com.example.BoardApplication.domain.board.dto.BoardDTO;
 import com.example.BoardApplication.domain.board.entity.BoardEntity;
 import com.example.BoardApplication.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -64,5 +68,20 @@ public class BoardService {
 
     public void delete(Long id) {
         boardRepository.deleteById(id);
+    }
+
+    public Page<BoardDTO> paging(Pageable pageable) {
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 3; // 한 페이지에 보여줄 글 갯수
+        //한 페이지당 3개씩 글을 보여주고 정렬 기준은 id 기준으로 내림차순 정렬한다는 의미
+        // page 위치에 있는 값은 0부터 시작
+        Page<BoardEntity> boardEntities =
+                boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        //Page 에서 제공해주는 map 메서드를 활용한다
+        // 목록: id, writer, title, hits, createdTime
+        //페이지 객체를 변환해냈다. 이제 이걸 컨트롤러로 보낸다
+        Page<BoardDTO> boardDTOS = boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardWriter(), board.getBoardTitle(), board.getBoardHits(), board.getCreatedTime()));
+        return boardDTOS;
     }
 }
