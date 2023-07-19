@@ -48,8 +48,8 @@
     <a class="a">공지글</a>
     <span style="margin-left: 500px">
     <button onclick="pagingReq()">3개</button>
-    <button>5개</button>
-    <button>10개</button>
+    <button onclick="pagingReq5()">5개</button>
+    <button onclick="pagingReq10()">10개</button>
         <span th:if="${session.loginId}">
     <a class="a" href="/board/save">글쓰기</a>
             </span>
@@ -103,6 +103,14 @@
 <script>
     const pagingReq = () => {
         location.href="/board/paging";
+    }
+
+        const pagingReq5 = () => {
+        location.href="/board/paging5";
+    }
+
+        const pagingReq10 = () => {
+        location.href="/board/paging10";
     }
 
         const saveReq = () => {

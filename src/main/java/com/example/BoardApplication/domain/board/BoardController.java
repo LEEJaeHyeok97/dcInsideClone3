@@ -122,4 +122,58 @@ public class BoardController {
         return mav;
 
     }
+
+    @GetMapping("/paging5")
+    public ModelAndView paging5(@PageableDefault(page = 1)Pageable pageable, Model model) {
+        //스프링의 Pageable 인터페이스를 사용한다
+//        pageable.getPageNumber();
+        Page<BoardDTO> boardList = boardService.paging5(pageable);
+        int blockLimit = 3;
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10~
+        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+
+        // page 갯수 20개
+        // 현재 사용자가 3페이지
+        // 1 2 3 4 5
+        // 현재 사용자가 7페이지
+        // 7 8 9
+        // 보여지는 페이지 갯수 3개
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+
+        ModelAndView mav = new ModelAndView("index");
+        return mav;
+
+    }
+
+    @GetMapping("/paging10")
+    public ModelAndView paging10(@PageableDefault(page = 1)Pageable pageable, Model model) {
+        //스프링의 Pageable 인터페이스를 사용한다
+//        pageable.getPageNumber();
+        Page<BoardDTO> boardList = boardService.paging10(pageable);
+        int blockLimit = 3;
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10~
+        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+
+        // page 갯수 20개
+        // 현재 사용자가 3페이지
+        // 1 2 3 4 5
+        // 현재 사용자가 7페이지
+        // 7 8 9
+        // 보여지는 페이지 갯수 3개
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+
+        ModelAndView mav = new ModelAndView("index");
+        return mav;
+
+    }
+
+
 }
